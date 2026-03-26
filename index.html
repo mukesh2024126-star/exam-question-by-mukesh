@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIP + Compression Exam Revision</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a33;
+      --card: #182245;
+      --text: #eaf0ff;
+      --muted: #a8b4d9;
+      --accent: #7aa2ff;
+      --ok: #79d7a3;
+      --warn: #ffd479;
+      --danger: #ff9b9b;
+      --border: #2a3768;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #090e1d 0%, #0f1731 100%);
+      color: var(--text);
+    }
+    .container {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+    header {
+      background: rgba(18, 26, 51, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: sticky;
+      top: 12px;
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.3rem, 2.5vw, 2rem);
+    }
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .controls {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+    }
+    input[type="search"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f1731;
+      color: var(--text);
+      outline: none;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { border-color: var(--accent); }
+    .section {
+      margin-top: 18px;
+      background: rgba(18, 26, 51, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .section h2 {
+      margin: 0;
+      padding: 14px 16px;
+      background: #111936;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.05rem;
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+    details {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #f2f6ff;
+    }
+    .answer {
+      margin-top: 10px;
+      color: #d6dffe;
+      line-height: 1.5;
+    }
+    .reason {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-left: 3px solid var(--accent);
+      background: #13214a;
+      border-radius: 6px;
+      color: #dbe5ff;
+      font-size: 0.95rem;
+    }
+    .formula {
+      margin: 8px 0;
+      background: #0f1731;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: Consolas, monospace;
+      color: #cfe0ff;
+      white-space: pre-wrap;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      margin-right: 6px;
+      border: 1px solid var(--border);
+      background: #0f1731;
+      color: var(--muted);
+    }
+    .true { color: var(--ok); font-weight: 700; }
+    .false { color: var(--danger); font-weight: 700; }
+    .tip {
+      background: #10203e;
+      border-left: 4px solid var(--warn);
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #f4e6c5;
+      margin-top: 12px;
+    }
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    @media (max-width: 720px) {
+      .controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Digital Image Processing + Compression — Exam Website</h1>
+      <p class="sub">All mock questions + completed incomplete questions + predicted questions with answers and logic.</p>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search question/answer (e.g., Laplacian, LZW, histogram)..." />
+        <button id="openAll">Open All</button>
+        <button id="closeAll">Close All</button>
+      </div>
+    </header>
+
+    <section class="section" data-section>
+      <h2>1) Compression (Huffman, LZW, ASCII)</h2>
+      <div class="grid">
+        <details>
+          <summary><span class="tag">Solved</span>Apply LZW compression to <b>ABABABAB</b>. Write output codes.</summary>
+          <div class="answer">Output sequence (ASCII initialized, next code 256): <b>&lt;65&gt;&lt;66&gt;&lt;256&gt;&lt;258&gt;&lt;66&gt;</b>.<br>Added dictionary entries: AB=256, BA=257, ABA=258, ABAB=259.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Solved</span>"advantage" encoded with Huffman length = 24 bits, ASCII uses 8 bits/char. Find original bits, compressed bits, compression ratio.</summary>
+          <div class="answer">
+            Word length = 9 characters.<br>
+            Original bits = 9 × 8 = <b>72 bits</b><br>
+            Compressed bits = <b>24 bits</b><br>
+            Compression ratio = 72 / 24 = <b>3:1</b><br>
+            Saving = ((72−24)/72)×100 = <b>66.67%</b>
+          </div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Solved</span>"advantage" with LZW: original 64 bits, compressed 32 bits. Find ratio.</summary>
+          <div class="answer">Compression ratio = 64/32 = <b>2:1</b>; saving = <b>50%</b>.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Solved</span>Original size 200 KB, compressed 50 KB. Find compression ratio.</summary>
+          <div class="answer">Compression ratio = 200/50 = <b>4:1</b>; saving = <b>75%</b>.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Solved</span>If original size = 72 bits and compressed size = 24 bits, find compression percentage.</summary>
+          <div class="answer">Saving % = ((72−24)/72)×100 = <b>66.67%</b>. Ratio = <b>3:1</b>.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Solved</span>For 2000 characters with average 3 bits/symbol, find total bits.</summary>
+          <div class="answer">Total bits = 2000 × 3 = <b>6000 bits</b>.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>In Huffman encoding, binary length depends on ______ of character.</summary>
+          <div class="answer"><b>Frequency/probability</b> of the character.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>Main advantage/purpose of Huffman coding?</summary>
+          <div class="answer">Variable-length lossless coding where frequent symbols get shorter codes, reducing average bits.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>Main purpose/use of LZW compression?</summary>
+          <div class="answer">Lossless dictionary-based compression of repeated sequences; used in formats like GIF/TIFF.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Match</span>Match Huffman, LZW, ASCII, Edge encoding.</summary>
+          <div class="answer">
+            Huffman → variable-length frequency-based coding<br>
+            LZW → dictionary-based coding<br>
+            ASCII → fixed-length character coding (8-bit in exam problems)<br>
+            Edge encoding → edge/structure-focused image coding concept
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>2) True / False (with answers)</h2>
+      <div class="grid">
+        <details><summary>Edge detection is an example of spatial filtering.</summary><div class="answer"><span class="true">True</span></div></details>
+        <details><summary>In RGB arrangement, each pixel has equally sized R, G, B subpixels.</summary><div class="answer"><span class="true">True</span> (standard conceptual RGB).</div></details>
+        <details><summary>In RGBG arrangement, subpixels are equal in size.</summary><div class="answer"><span class="false">False</span> (practical RGBG emphasizes green sampling).</div></details>
+        <details><summary>Fully saturating an RGB color represents its brightness.</summary><div class="answer"><span class="false">False</span>. Saturation is color purity, not brightness.</div></details>
+        <details><summary>Fully saturating an image always changes brightness value.</summary><div class="answer"><span class="false">False</span> in principle; saturation can be changed while holding brightness/luma target.</div></details>
+        <details><summary>Increasing contrast improves image quality without detail loss.</summary><div class="answer"><span class="false">False</span>. Too much contrast causes clipping and detail loss.</div></details>
+        <details><summary>If original size = 200 KB and compressed = 50 KB, ratio is 4:1.</summary><div class="answer"><span class="true">True</span>.</div></details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>3) Histogram, Brightness, Contrast (completed incomplete questions)</h2>
+      <div class="grid">
+        <details>
+          <summary>“Histogram moves to ______ when ______ to lose image information.”</summary>
+          <div class="answer">Moves <b>right</b> when brightness increases; moves <b>left</b> when brightness decreases. If shifted beyond [0,255], clipping occurs and detail is lost.</div>
+        </details>
+
+        <details>
+          <summary>Main purpose of histogram?</summary>
+          <div class="answer">To show intensity distribution and analyze brightness, contrast, dynamic range, and clipping.</div>
+        </details>
+
+        <details>
+          <summary>What changes in histogram when image detail is lost?</summary>
+          <div class="answer">Spikes/pile-up near 0 or 255 (clipping), reduced meaningful tonal spread.</div>
+        </details>
+
+        <details>
+          <summary>In image processing, analyzing histogram shows ______.</summary>
+          <div class="answer">Brightness and contrast distribution of the image.</div>
+        </details>
+
+        <details>
+          <summary>“To ______ an RGB image when difference between most & least intensity value.”</summary>
+          <div class="answer">To <b>increase contrast</b>, increase the difference between max and min intensity values.</div>
+        </details>
+
+        <details>
+          <summary>“To ______ of RGB color of most and least color while brightness remains unchanged.”</summary>
+          <div class="answer">To <b>adjust saturation</b>, modify max–min RGB difference while preserving brightness/luma.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>4) Spatial Filtering & Edge Detection</h2>
+      <div class="grid">
+        <details>
+          <summary>Purpose of spatial filtering?</summary>
+          <div class="answer">Neighborhood-based processing for smoothing, sharpening, edge detection, and feature extraction.</div>
+        </details>
+
+        <details>
+          <summary>Explain Canny edge detection.</summary>
+          <div class="answer">Multi-stage method: Gaussian smoothing → gradient → non-maximum suppression → double threshold/hysteresis.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Topic</span>Explain Gaussian filter (separate question).</summary>
+          <div class="answer">Gaussian is a <b>smoothing/low-pass</b> filter. It reduces random noise and fine detail before operations like edge detection.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Topic</span>Explain Laplacian filter (separate question).</summary>
+          <div class="answer">Laplacian is a <b>second-derivative high-pass</b> operator. It responds strongly to rapid intensity changes (edges/fine detail), but can also amplify noise.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Topic</span>Explain convolution (separate question).</summary>
+          <div class="answer">Convolution computes each output pixel as a weighted sum of neighborhood pixels using a kernel after spatial flipping. For symmetric kernels, convolution and correlation give the same values.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>Which filter is best before Canny edge detection?</summary>
+          <div class="answer"><b>Gaussian smoothing</b>, to suppress noise and reduce false edges.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>Which operator is based on second derivative?</summary>
+          <div class="answer"><b>Laplacian</b>.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">MCQ</span>In convolution, what is the key difference from correlation?</summary>
+          <div class="answer">The kernel is <b>flipped</b> in convolution.</div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Match</span>Gaussian / Laplacian / Convolution — match the following.</summary>
+          <div class="answer">
+            Gaussian → <b>Noise reduction / smoothing</b><br>
+            Laplacian → <b>Edge/detail enhancement (2nd derivative)</b><br>
+            Convolution → <b>Kernel-based neighborhood weighted sum (with kernel flip)</b>
+          </div>
+        </details>
+
+        <details>
+          <summary>“______ central pixel using both correlation/convolution.”</summary>
+          <div class="answer">Compute processed central pixel as weighted sum of neighborhood values using the filter kernel.</div>
+        </details>
+
+        <details>
+          <summary>“Sharpened image using Laplacian is obtained by ______.”</summary>
+          <div class="answer">Subtracting Laplacian-filtered output from original image: <div class="formula">g = f − ∇²f</div></div>
+        </details>
+
+        <details>
+          <summary>Egg crack detection with backlight — which filter?</summary>
+          <div class="answer">Edge/high-pass filtering (commonly Laplacian or Canny-style edge detector).</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>5) RGB, Color Models, Display</h2>
+      <div class="grid">
+        <details>
+          <summary>In LCD, why RGBG used instead of RGB?</summary>
+          <div class="answer">Human vision is more sensitive to green/luminance detail, so extra green improves perceived sharpness/efficiency.</div>
+        </details>
+
+        <details>
+          <summary>What is the difference between hue, saturation, brightness?</summary>
+          <div class="answer">Hue = color type; Saturation = color purity/vividness; Brightness/Luma = lightness perception.</div>
+        </details>
+
+        <details>
+          <summary>Best grayscale/luma estimate from RGB?</summary>
+          <div class="answer"><div class="formula">Y = 0.3R + 0.59G + 0.11B</div></div>
+        </details>
+
+        <details>
+          <summary>If R=G=B, what does it mean?</summary>
+          <div class="answer">Neutral grayscale; saturation is 0.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>6) Matching (Solved)</h2>
+      <div class="grid">
+        <details open>
+          <summary>Contrast Enhancement / Histogram Equalization / Clipping / Saturation Adjustment</summary>
+          <div class="answer">
+            Contrast Enhancement → <b>Expands brightness range, details clearer</b><br>
+            Histogram Equalization → <b>Redistributes brightness for more uniform contrast</b><br>
+            Clipping → <b>Cuts off extreme values, causing detail loss</b><br>
+            Saturation Adjustment → <b>Changes color intensity without changing brightness target</b>
+          </div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Important</span>Match the following (Spatial topic focus).</summary>
+          <div class="answer">
+            <b>Column A</b><br>
+            1) Gaussian filter<br>
+            2) Laplacian operator<br>
+            3) Convolution<br>
+            4) Canny edge detector<br><br>
+
+            <b>Column B (answers)</b><br>
+            1 → Reduces noise using weighted smoothing<br>
+            2 → Highlights rapid intensity change using second derivative<br>
+            3 → Applies kernel weighted sum with spatial flip<br>
+            4 → Multi-stage detector with NMS + double-threshold/hysteresis
+          </div>
+        </details>
+
+        <details>
+          <summary><span class="tag">Important</span>Match kernels to purpose (exam style).</summary>
+          <div class="answer">
+            <div class="formula">[1 2 1; 2 4 2; 1 2 1]/16  → Gaussian smoothing</div>
+            <div class="formula">[0 1 0; 1 -4 1; 0 1 0]   → Laplacian edge response</div>
+            <div class="formula">[0 -1 0; -1 5 -1; 0 -1 0] → Sharpening (Laplacian + original)</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>7) Predicted Extra Questions (with answers)</h2>
+      <div class="grid">
+        <details>
+          <summary>Why can LZW work without prior probabilities?</summary>
+          <div class="answer">Because dictionary is built adaptively from incoming sequences during encoding.</div>
+        </details>
+
+        <details>
+          <summary>When does RLE perform poorly?</summary>
+          <div class="answer">When data has few repeated runs; output can become equal or larger.</div>
+        </details>
+
+        <details>
+          <summary>If original=150 KB and compressed=75 KB, find ratio and saving.</summary>
+          <div class="answer">Ratio = <b>2:1</b>, saving = <b>50%</b>.</div>
+        </details>
+
+        <details>
+          <summary>What indicates low contrast in histogram?</summary>
+          <div class="answer">Narrow intensity spread in small range.</div>
+        </details>
+
+        <details>
+          <summary>Why apply Gaussian before edge detection?</summary>
+          <div class="answer">To reduce noise and avoid false edges.</div>
+        </details>
+
+        <details>
+          <summary>Why median filter is preferred for salt-and-pepper noise?</summary>
+          <div class="answer">It rejects outliers better than averaging, preserving edges more effectively.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <h2>8) Quick Formula Box</h2>
+      <div class="grid">
+        <details open>
+          <summary>Must-memorize formulas</summary>
+          <div class="answer">
+            <div class="formula">Compression ratio = Original / Compressed</div>
+            <div class="formula">Saving% = ((Original − Compressed) / Original) × 100</div>
+            <div class="formula">Contrast = max intensity − min intensity</div>
+            <div class="formula">Brightness change: add/subtract constant</div>
+            <div class="formula">Contrast change: multiply/divide constant</div>
+            <div class="formula">Laplacian sharpening: g = f − ∇²f</div>
+            <div class="formula">Luma: Y = 0.3R + 0.59G + 0.11B</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <div class="tip">
+      Exam tip: In numerical answers, always show <b>formula → substitution → final value + unit</b>. This secures marks even if final arithmetic has a small mistake.
+    </div>
+
+    <footer>
+      Built for your March 2026 exam revision • You can print this page as PDF for quick study.
+    </footer>
+  </div>
+
+  <script>
+    const detailsList = Array.from(document.querySelectorAll('details'));
+    const openAllBtn = document.getElementById('openAll');
+    const closeAllBtn = document.getElementById('closeAll');
+    const searchInput = document.getElementById('search');
+
+    function reasonForQuestion(q) {
+      const s = q.toLowerCase();
+
+      if (s.includes('lzw') && s.includes('output codes')) return 'LZW emits the longest known pattern first, then adds new longer patterns to the dictionary, which is why repeated text gives fewer output codes.';
+      if (s.includes('huffman') && s.includes('compression ratio')) return 'Huffman reduces average bits by assigning shorter codes to frequent symbols, so ratio is obtained by dividing original bits by compressed bits.';
+      if (s.includes('compression ratio') || s.includes('compressed') || s.includes('saving')) return 'Compression performance is measured by comparing original size to compressed size; ratio shows fold reduction and saving% shows space saved.';
+      if (s.includes('average 3 bits') || s.includes('total bits')) return 'Total bits are computed directly as symbols × bits per symbol.';
+      if (s.includes('huffman encoding') && s.includes('depends')) return 'Huffman is probability-driven: higher frequency symbols should consume fewer bits to minimize overall average length.';
+      if (s.includes('main advantage') && s.includes('huffman')) return 'Variable-length prefix coding is efficient because common symbols dominate most real data.';
+      if (s.includes('main purpose/use of lzw') || s.includes('why can lzw')) return 'LZW is adaptive and does not need a pre-known probability table because the dictionary is learned during processing.';
+      if (s.includes('match huffman') || s.includes('ascii')) return 'Each item is matched by coding principle: fixed-length (ASCII), variable-length frequency coding (Huffman), and dictionary coding (LZW).';
+
+      if (s.includes('true / false') || s.includes('edge detection is an example')) return 'Edge detection uses neighborhood kernels/derivatives, which is exactly spatial filtering behavior.';
+      if (s.includes('rgbg')) return 'RGBG emphasizes green because human vision is more sensitive to luminance detail carried strongly by green.';
+      if (s.includes('saturating') || s.includes('saturation')) return 'Saturation represents color purity (distance from gray), while brightness/luma represents light intensity, so they are different properties.';
+      if (s.includes('contrast improves image quality')) return 'Increasing contrast can push values outside display range [0,255], causing clipping and loss of shadow/highlight details.';
+
+      if (s.includes('histogram moves')) return 'Brightness changes shift pixel intensities left/right on histogram; clipping at extremes shows lost information.';
+      if (s.includes('main purpose of histogram') || s.includes('analyzing histogram')) return 'A histogram is a count of pixel intensities, so it directly reveals brightness distribution, contrast spread, and clipping.';
+      if (s.includes('image detail is lost')) return 'When tones are clipped, many pixels collapse to 0 or 255, creating spikes and reducing useful tonal variation.';
+      if (s.includes('difference between most & least intensity') || s.includes('increase contrast')) return 'Contrast is mathematically tied to dynamic range (max−min), so widening that gap increases contrast.';
+
+      if (s.includes('spatial filtering')) return 'Spatial filters combine neighboring pixels to either suppress noise (smoothing) or emphasize change (sharpening/edges).';
+      if (s.includes('canny')) return 'Canny is robust because it smooths noise first and then keeps only strong, thin, connected edges through NMS and hysteresis.';
+      if (s.includes('gaussian')) return 'Gaussian gives weighted averaging with stronger center weights, reducing random noise while preserving overall structure.';
+      if (s.includes('laplacian')) return 'Laplacian is a second derivative, so it reacts strongly where intensity changes abruptly (edges/fine details).';
+      if (s.includes('convolution')) return 'Convolution applies a kernel as a weighted sum with spatial flip, which is the standard linear filtering model in image processing.';
+      if (s.includes('central pixel')) return 'The output at one location is computed from a local neighborhood because filtering is a neighborhood operation, not a single-pixel operation.';
+      if (s.includes('sharpened image using laplacian')) return 'Subtracting Laplacian removes low-frequency blur and boosts high-frequency detail, producing a sharper image.';
+      if (s.includes('egg crack')) return 'Cracks are thin intensity discontinuities, so edge/high-pass filters make them stand out against smoother shell regions.';
+
+      if (s.includes('hue') || s.includes('brightness')) return 'Hue identifies the color family, saturation controls purity, and brightness/luma controls perceived light level.';
+      if (s.includes('grayscale') || s.includes('luma')) return 'The weighted formula uses visual sensitivity (green > red > blue), producing grayscale that matches human perception better.';
+      if (s.includes('r=g=b')) return 'Equal RGB means no dominant color channel, therefore the color is neutral gray and saturation is zero.';
+
+      if (s.includes('match kernels')) return 'Kernel shape and coefficients define behavior: all-positive averaging smooths, derivative-like positive/negative patterns detect edges or sharpen.';
+      if (s.includes('rle perform poorly')) return 'RLE only helps when values repeat in long runs; without runs, count+value overhead can increase size.';
+      if (s.includes('median filter')) return 'Median rejects impulse outliers better than mean, so salt-and-pepper noise is removed with better edge preservation.';
+
+      return 'This answer follows the core principle taught in the slides: identify the underlying image/compression concept, then apply its direct formula or rule.';
+    }
+
+    function attachReasons() {
+      detailsList.forEach(d => {
+        const answer = d.querySelector('.answer');
+        const summary = d.querySelector('summary');
+        if (!answer || !summary || answer.querySelector('.reason')) return;
+        const reason = document.createElement('div');
+        reason.className = 'reason';
+        reason.innerHTML = `<b>Why/Logic:</b> ${reasonForQuestion(summary.textContent.trim())}`;
+        answer.appendChild(reason);
+      });
+    }
+
+    attachReasons();
+
+    openAllBtn.addEventListener('click', () => detailsList.forEach(d => d.open = true));
+    closeAllBtn.addEventListener('click', () => detailsList.forEach(d => d.open = false));
+
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      detailsList.forEach(d => {
+        const text = d.textContent.toLowerCase();
+        const match = text.includes(q);
+        d.style.display = match ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
